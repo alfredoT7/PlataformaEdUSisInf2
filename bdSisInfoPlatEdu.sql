@@ -1,10 +1,41 @@
+/*==============================================================*/
+/* Table: ASIGNACION_TAREA                                      */
+/*==============================================================*/
+create table ASIGNACION_TAREA (
+   ID_MATERIA           INT4                 not null,
+   PERIODO_ACAD         VARCHAR(8)           not null,
+   ID_TAREA             INT4                 not null,
+   constraint PK_ASIGNACION_TAREA primary key (ID_MATERIA, PERIODO_ACAD, ID_TAREA)
+);
+
+/*==============================================================*/
+/* Index: ASIGNACION_TAREA_PK                                   */
+/*==============================================================*/
+create unique index ASIGNACION_TAREA_PK on ASIGNACION_TAREA (
+ID_MATERIA,
+PERIODO_ACAD,
+ID_TAREA
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_27_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_27_FK on ASIGNACION_TAREA (
+ID_MATERIA
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_16_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_16_FK on ASIGNACION_TAREA (
+ID_TAREA
+);
 
 /*==============================================================*/
 /* Table: COMENTARIO                                            */
 /*==============================================================*/
 create table COMENTARIO (
    ID_COMENTARIO        SERIAL               not null,
-   ID_COM_RESPUESTA     INT4                 null,
    COMENTARIO           VARCHAR(200)         null,
    constraint PK_COMENTARIO primary key (ID_COMENTARIO)
 );
@@ -14,13 +45,6 @@ create table COMENTARIO (
 /*==============================================================*/
 create unique index COMENTARIO_PK on COMENTARIO (
 ID_COMENTARIO
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_33_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_33_FK on COMENTARIO (
-ID_COM_RESPUESTA
 );
 
 /*==============================================================*/
@@ -78,6 +102,7 @@ create table ENTREGA (
    ID_TIPO_ARCHIVO      INT4                 null,
    RETRASO_ENTREGA      BOOL                 not null,
    CALIFICACION         INT4                 null,
+   RUTA                 CHAR(10)             null,
    constraint PK_ENTREGA primary key (ID_ENTREGA)
 );
 
@@ -144,30 +169,13 @@ ID_ENTREGA
 );
 
 /*==============================================================*/
-/* Table: GRADO_ACADEMICO                                       */
-/*==============================================================*/
-create table GRADO_ACADEMICO (
-   ID_GRADO_ACAD        SERIAL               not null,
-   GRADO_ACAD           VARCHAR(30)          not null,
-   constraint PK_GRADO_ACADEMICO primary key (ID_GRADO_ACAD)
-);
-
-/*==============================================================*/
-/* Index: GRADO_ACADEMICO_PK                                    */
-/*==============================================================*/
-create unique index GRADO_ACADEMICO_PK on GRADO_ACADEMICO (
-ID_GRADO_ACAD
-);
-
-/*==============================================================*/
 /* Table: INSCRIPCION                                           */
 /*==============================================================*/
 create table INSCRIPCION (
    ID_MATERIA           INT4                 not null,
-   ID_DOCENTE           INT4                 not null,
    ID_ESTUDIANTE        INT4                 not null,
    PERIODO_ACADEMICO    VARCHAR(8)           not null,
-   constraint PK_INSCRIPCION primary key (ID_MATERIA, ID_DOCENTE, ID_ESTUDIANTE, PERIODO_ACADEMICO)
+   constraint PK_INSCRIPCION primary key (ID_MATERIA, ID_ESTUDIANTE, PERIODO_ACADEMICO)
 );
 
 /*==============================================================*/
@@ -175,7 +183,6 @@ create table INSCRIPCION (
 /*==============================================================*/
 create unique index INSCRIPCION_PK on INSCRIPCION (
 ID_MATERIA,
-ID_DOCENTE,
 ID_ESTUDIANTE,
 PERIODO_ACADEMICO
 );
@@ -184,8 +191,7 @@ PERIODO_ACADEMICO
 /* Index: RELATIONSHIP_23_FK                                    */
 /*==============================================================*/
 create  index RELATIONSHIP_23_FK on INSCRIPCION (
-ID_MATERIA,
-ID_DOCENTE
+ID_MATERIA
 );
 
 /*==============================================================*/
@@ -196,190 +202,159 @@ ID_ESTUDIANTE
 );
 
 /*==============================================================*/
-/* Table: LICENCIATURA                                          */
-/*==============================================================*/
-create table LICENCIATURA (
-   ID_GRADO_ACAD        INT4                 not null,
-   ID_LICENCIATURA      SERIAL               not null,
-   ID_DOCENTE           INT4                 not null,
-   NOM_LICENCIATURA     VARCHAR(30)          not null,
-   constraint PK_LICENCIATURA primary key (ID_GRADO_ACAD, ID_LICENCIATURA, ID_DOCENTE)
-);
-
-/*==============================================================*/
-/* Index: LICENCIATURA_PK                                       */
-/*==============================================================*/
-create unique index LICENCIATURA_PK on LICENCIATURA (
-ID_GRADO_ACAD,
-ID_LICENCIATURA,
-ID_DOCENTE
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_10_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_10_FK on LICENCIATURA (
-ID_GRADO_ACAD
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_31_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_31_FK on LICENCIATURA (
-ID_DOCENTE
-);
-
-/*==============================================================*/
 /* Table: MATERIA                                               */
 /*==============================================================*/
 create table MATERIA (
    ID_MATERIA           SERIAL               not null,
-   ID_DOCENTE           INT4                 not null,
    NOMBRE_MATERIA       VARCHAR(30)          not null,
    DESCRIPCION2         VARCHAR(30)          not null,
-   constraint PK_MATERIA primary key (ID_MATERIA, ID_DOCENTE)
+   constraint PK_MATERIA primary key (ID_MATERIA)
 );
 
 /*==============================================================*/
 /* Index: MATERIA_PK                                            */
 /*==============================================================*/
 create unique index MATERIA_PK on MATERIA (
-ID_MATERIA,
-ID_DOCENTE
+ID_MATERIA
 );
 
 /*==============================================================*/
-/* Index: RELATIONSHIP_32_FK                                    */
+/* Table: MATERIA_DOCENTE                                       */
 /*==============================================================*/
-create  index RELATIONSHIP_32_FK on MATERIA (
-ID_DOCENTE
-);
-
-/*==============================================================*/
-/* Table: MATERIAL_EDUCATIVO                                    */
-/*==============================================================*/
-create table MATERIAL_EDUCATIVO (
-   ID_MATERIAL          SERIAL               not null,
-   ID_TIPO_ARCHIVO      INT4                 null,
-   ARCHIVO              VARCHAR(200)         not null,
-   DESCIPCION_MATERIAL  VARCHAR(200)         null,
-   constraint PK_MATERIAL_EDUCATIVO primary key (ID_MATERIAL)
-);
-
-/*==============================================================*/
-/* Index: MATERIAL_EDUCATIVO_PK                                 */
-/*==============================================================*/
-create unique index MATERIAL_EDUCATIVO_PK on MATERIAL_EDUCATIVO (
-ID_MATERIAL
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_36_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_36_FK on MATERIAL_EDUCATIVO (
-ID_TIPO_ARCHIVO
-);
-
-/*==============================================================*/
-/* Table: MATERIAL_EDU_MATERIA                                  */
-/*==============================================================*/
-create table MATERIAL_EDU_MATERIA (
-   ID_MATERIAL          INT4                 not null,
-   ID_MATERIA           INT4                 not null,
+create table MATERIA_DOCENTE (
    ID_DOCENTE           INT4                 not null,
-   constraint PK_MATERIAL_EDU_MATERIA primary key (ID_MATERIAL, ID_MATERIA, ID_DOCENTE)
-);
-
-/*==============================================================*/
-/* Index: MATERIAL_EDU_MATERIA_PK                               */
-/*==============================================================*/
-create unique index MATERIAL_EDU_MATERIA_PK on MATERIAL_EDU_MATERIA (
-ID_MATERIAL,
-ID_MATERIA,
-ID_DOCENTE
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_34_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_34_FK on MATERIAL_EDU_MATERIA (
-ID_MATERIA,
-ID_DOCENTE
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_35_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_35_FK on MATERIAL_EDU_MATERIA (
-ID_MATERIAL
-);
-
-/*==============================================================*/
-/* Table: MATERIA_TAREA                                         */
-/*==============================================================*/
-create table MATERIA_TAREA (
    ID_MATERIA           INT4                 not null,
-   ID_DOCENTE           INT4                 not null,
-   ID_TAREA             INT4                 not null,
-   PERIODO_ACAD         VARCHAR(8)           not null,
-   constraint PK_MATERIA_TAREA primary key (ID_MATERIA, ID_DOCENTE, ID_TAREA, PERIODO_ACAD)
+   constraint PK_MATERIA_DOCENTE primary key (ID_DOCENTE, ID_MATERIA)
 );
 
 /*==============================================================*/
-/* Index: MATERIA_TAREA_PK                                      */
+/* Index: MATERIA_DOCENTE_PK                                    */
 /*==============================================================*/
-create unique index MATERIA_TAREA_PK on MATERIA_TAREA (
-ID_MATERIA,
+create unique index MATERIA_DOCENTE_PK on MATERIA_DOCENTE (
 ID_DOCENTE,
-ID_TAREA,
-PERIODO_ACAD
-);
-
-/*==============================================================*/
-/* Index: RELATIONSHIP_27_FK                                    */
-/*==============================================================*/
-create  index RELATIONSHIP_27_FK on MATERIA_TAREA (
-ID_MATERIA,
-ID_DOCENTE
+ID_MATERIA
 );
 
 /*==============================================================*/
 /* Index: RELATIONSHIP_28_FK                                    */
 /*==============================================================*/
-create  index RELATIONSHIP_28_FK on MATERIA_TAREA (
+create  index RELATIONSHIP_28_FK on MATERIA_DOCENTE (
+ID_DOCENTE
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_31_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_31_FK on MATERIA_DOCENTE (
+ID_MATERIA
+);
+
+/*==============================================================*/
+/* Table: NOTIFICACION                                          */
+/*==============================================================*/
+create table NOTIFICACION (
+   ID_NOTIFICACION      SERIAL               not null,
+   CONTENIDO_NOTIFICACION VARCHAR(1000)        not null,
+   constraint PK_NOTIFICACION primary key (ID_NOTIFICACION)
+);
+
+/*==============================================================*/
+/* Index: NOTIFICACION_PK                                       */
+/*==============================================================*/
+create unique index NOTIFICACION_PK on NOTIFICACION (
+ID_NOTIFICACION
+);
+
+/*==============================================================*/
+/* Table: NOTIFICACION_TAREA                                    */
+/*==============================================================*/
+create table NOTIFICACION_TAREA (
+   ID_TAREA             INT4                 not null,
+   ID_ESTUDIANTE        INT4                 not null,
+   ID_NOTIFICACION      INT4                 not null,
+   constraint PK_NOTIFICACION_TAREA primary key (ID_TAREA, ID_ESTUDIANTE, ID_NOTIFICACION)
+);
+
+/*==============================================================*/
+/* Index: NOTIFICACION_TAREA_PK                                 */
+/*==============================================================*/
+create unique index NOTIFICACION_TAREA_PK on NOTIFICACION_TAREA (
+ID_TAREA,
+ID_ESTUDIANTE,
+ID_NOTIFICACION
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_17_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_17_FK on NOTIFICACION_TAREA (
 ID_TAREA
 );
 
 /*==============================================================*/
-/* Table: NOTIFICACIONES                                        */
+/* Index: RELATIONSHIP_18_FK                                    */
 /*==============================================================*/
-create table NOTIFICACIONES (
-   ID_TAREA             INT4                 not null,
-   ID_ESTUDIANTE        INT4                 not null,
-   CONTENIDO_NOT        VARCHAR(200)         not null,
-   constraint PK_NOTIFICACIONES primary key (ID_TAREA, ID_ESTUDIANTE)
-);
-
-/*==============================================================*/
-/* Index: NOTIFICACIONES_PK                                     */
-/*==============================================================*/
-create unique index NOTIFICACIONES_PK on NOTIFICACIONES (
-ID_TAREA,
+create  index RELATIONSHIP_18_FK on NOTIFICACION_TAREA (
 ID_ESTUDIANTE
 );
 
 /*==============================================================*/
 /* Index: RELATIONSHIP_19_FK                                    */
 /*==============================================================*/
-create  index RELATIONSHIP_19_FK on NOTIFICACIONES (
-ID_TAREA
+create  index RELATIONSHIP_19_FK on NOTIFICACION_TAREA (
+ID_NOTIFICACION
+);
+
+/*==============================================================*/
+/* Table: ROL                                                   */
+/*==============================================================*/
+create table ROL (
+   ID_ROL               SERIAL               not null,
+   NOMBRE_ROL           VARCHAR(30)          not null,
+   ROL_ACTIVO           BOOL                 not null,
+   constraint PK_ROL primary key (ID_ROL)
+);
+
+/*==============================================================*/
+/* Index: ROL_PK                                                */
+/*==============================================================*/
+create unique index ROL_PK on ROL (
+ID_ROL
+);
+
+/*==============================================================*/
+/* Table: ROL_USUARIO                                           */
+/*==============================================================*/
+create table ROL_USUARIO (
+   ID_USERN             INT4                 not null,
+   ID_ROL               INT4                 not null,
+   FECHA_ACTVACION      DATE                 not null,
+   DESDE                DATE                 not null,
+   HASTA                DATE                 not null,
+   constraint PK_ROL_USUARIO primary key (ID_USERN, ID_ROL, FECHA_ACTVACION)
+);
+
+/*==============================================================*/
+/* Index: ROL_USUARIO_PK                                        */
+/*==============================================================*/
+create unique index ROL_USUARIO_PK on ROL_USUARIO (
+ID_USERN,
+ID_ROL,
+FECHA_ACTVACION
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_15_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_15_FK on ROL_USUARIO (
+ID_ROL
 );
 
 /*==============================================================*/
 /* Index: RELATIONSHIP_20_FK                                    */
 /*==============================================================*/
-create  index RELATIONSHIP_20_FK on NOTIFICACIONES (
-ID_ESTUDIANTE
+create  index RELATIONSHIP_20_FK on ROL_USUARIO (
+ID_USERN
 );
 
 /*==============================================================*/
@@ -468,9 +443,14 @@ create unique index USUARIO_PK on USUARIO (
 ID_USERN
 );
 
-alter table COMENTARIO
-   add constraint FK_COMENTAR_RELATIONS_COMENTAR foreign key (ID_COM_RESPUESTA)
-      references COMENTARIO (ID_COMENTARIO)
+alter table ASIGNACION_TAREA
+   add constraint FK_ASIGNACI_RELATIONS_TAREA foreign key (ID_TAREA)
+      references TAREA (ID_TAREA)
+      on delete restrict on update restrict;
+
+alter table ASIGNACION_TAREA
+   add constraint FK_ASIGNACI_RELATIONS_MATERIA foreign key (ID_MATERIA)
+      references MATERIA (ID_MATERIA)
       on delete restrict on update restrict;
 
 alter table COMENTARIO_ENTREGA
@@ -509,8 +489,8 @@ alter table ESTUDIANTE_ENTREGA
       on delete restrict on update restrict;
 
 alter table INSCRIPCION
-   add constraint FK_INSCRIPC_RELATIONS_MATERIA foreign key (ID_MATERIA, ID_DOCENTE)
-      references MATERIA (ID_MATERIA, ID_DOCENTE)
+   add constraint FK_INSCRIPC_RELATIONS_MATERIA foreign key (ID_MATERIA)
+      references MATERIA (ID_MATERIA)
       on delete restrict on update restrict;
 
 alter table INSCRIPCION
@@ -518,54 +498,39 @@ alter table INSCRIPCION
       references ESTUDIANTE (ID_ESTUDIANTE)
       on delete restrict on update restrict;
 
-alter table LICENCIATURA
-   add constraint FK_LICENCIA_RELATIONS_GRADO_AC foreign key (ID_GRADO_ACAD)
-      references GRADO_ACADEMICO (ID_GRADO_ACAD)
-      on delete restrict on update restrict;
-
-alter table LICENCIATURA
-   add constraint FK_LICENCIA_RELATIONS_DOCENTE foreign key (ID_DOCENTE)
+alter table MATERIA_DOCENTE
+   add constraint FK_MATERIA__RELATIONS_DOCENTE foreign key (ID_DOCENTE)
       references DOCENTE (ID_DOCENTE)
       on delete restrict on update restrict;
 
-alter table MATERIA
-   add constraint FK_MATERIA_RELATIONS_DOCENTE foreign key (ID_DOCENTE)
-      references DOCENTE (ID_DOCENTE)
+alter table MATERIA_DOCENTE
+   add constraint FK_MATERIA__RELATIONS_MATERIA foreign key (ID_MATERIA)
+      references MATERIA (ID_MATERIA)
       on delete restrict on update restrict;
 
-alter table MATERIAL_EDUCATIVO
-   add constraint FK_MATERIAL_RELATIONS_TIPO_ARC foreign key (ID_TIPO_ARCHIVO)
-      references TIPO_ARCHIVO (ID_TIPO_ARCHIVO)
-      on delete restrict on update restrict;
-
-alter table MATERIAL_EDU_MATERIA
-   add constraint FK_MATERIAL_RELATIONS_MATERIA foreign key (ID_MATERIA, ID_DOCENTE)
-      references MATERIA (ID_MATERIA, ID_DOCENTE)
-      on delete restrict on update restrict;
-
-alter table MATERIAL_EDU_MATERIA
-   add constraint FK_MATERIAL_RELATIONS_MATERIAL foreign key (ID_MATERIAL)
-      references MATERIAL_EDUCATIVO (ID_MATERIAL)
-      on delete restrict on update restrict;
-
-alter table MATERIA_TAREA
-   add constraint FK_MATERIA__RELATIONS_MATERIA foreign key (ID_MATERIA, ID_DOCENTE)
-      references MATERIA (ID_MATERIA, ID_DOCENTE)
-      on delete restrict on update restrict;
-
-alter table MATERIA_TAREA
-   add constraint FK_MATERIA__RELATIONS_TAREA foreign key (ID_TAREA)
-      references TAREA (ID_TAREA)
-      on delete restrict on update restrict;
-
-alter table NOTIFICACIONES
+alter table NOTIFICACION_TAREA
    add constraint FK_NOTIFICA_RELATIONS_TAREA foreign key (ID_TAREA)
       references TAREA (ID_TAREA)
       on delete restrict on update restrict;
 
-alter table NOTIFICACIONES
+alter table NOTIFICACION_TAREA
    add constraint FK_NOTIFICA_RELATIONS_ESTUDIAN foreign key (ID_ESTUDIANTE)
       references ESTUDIANTE (ID_ESTUDIANTE)
+      on delete restrict on update restrict;
+
+alter table NOTIFICACION_TAREA
+   add constraint FK_NOTIFICA_RELATIONS_NOTIFICA foreign key (ID_NOTIFICACION)
+      references NOTIFICACION (ID_NOTIFICACION)
+      on delete restrict on update restrict;
+
+alter table ROL_USUARIO
+   add constraint FK_ROL_USUA_RELATIONS_ROL foreign key (ID_ROL)
+      references ROL (ID_ROL)
+      on delete restrict on update restrict;
+
+alter table ROL_USUARIO
+   add constraint FK_ROL_USUA_RELATIONS_USUARIO foreign key (ID_USERN)
+      references USUARIO (ID_USERN)
       on delete restrict on update restrict;
 
 alter table TAREA_ENTREGA
